@@ -5,12 +5,10 @@ def solve(client):
     client.end()
     client.start()
 
-    all_students = list(range(1, client.students + 1))
-    non_home = list(range(1, client.home)) + list(range(client.home + 1, client.v + 1))
-    client.scout(random.choice(non_home), all_students)
+    edges = list(nx.dfs_edges(client.G, source=client.home))
+    edges.reverse()
 
-    for _ in range(100):
-        u, v = random.choice(list(client.G.edges()))
-        client.remote(u, v)
-    print(client.bot_locations)
+    for e in edges:
+        client.remote(e[1], e[0])
+    
     client.end()
