@@ -1,24 +1,45 @@
 import networkx as nx
 import random
+import copy
 
 def solve(client):
     client.end()
     client.start()
+
+    # 91 Points versus 75 points
+
     print("Home: " + str(client.home))
-    
-    edges = list(nx.bfs_edges(client.G, source = client.home))
-    edges.reverse()
+
+    nonHomeNodes = list(client.G.nodes)
+    nonHomeNodes.remove(client.home)
+
+    heuristics = []
+
+    for n in nonHomeNodes:
+        val = client.scout(n, list(range(1, client.students + 1)))
+        yes = 0
+        for s in val.values():
+            if s:
+                yes += 1
+        heuristics.append((n, yes))
+
+    heuristics.sort(key = lambda x: x[1], reverse = True)
+    #print(heuristics)
 
     index = 0
-    while len(client.bot_locations) != client.bots and index < len(edges):
-        e = edges[index]
-        client.remote(e[1], e[0])
+    while len(client.bot_locations) < client.bots and index < len(heuristics):
+        node = heuristics[index][0]
+        path = nx.algorithms.shortest_path(client.G, source=node, target=client.home )
+        for n in range(0, len(path) - 1):
+            client.remote(path[n], path[n + 1])
         index += 1
+    # print("Node: " + str(node))
+    # print("Home: " + str(client.home))
+    # print(path)
 
-    if len(client.bot_locations) != client.bots:
-        print("index ran out")
-    else:
-        print("Found all bots!")
-        print(client.bot_locations)
 
+
+
+
+    print(client.bot_locations)
     client.end()
