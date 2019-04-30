@@ -29,17 +29,13 @@ def solve(client):
     index = 0
     while len(client.bot_locations) < client.bots and index < len(heuristics):
         node = heuristics[index][0]
-        path = nx.algorithms.shortest_path(client.G, source=node, target=client.home )
+        path = nx.algorithms.shortest_path(client.G, source=node, target=client.home)
+        print(path)
         for n in range(0, len(path) - 1):
             result = client.remote(path[n], path[n + 1])
             if result == 0:
                 break
         index += 1
-
-    # print("Node: " + str(node))
-    # print("Home: " + str(client.home))
-    # print(path)
-
 
     print(client.bot_locations)
     client.end()
