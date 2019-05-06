@@ -6,15 +6,15 @@ def solve(client):
     client.end()
     client.start()
 
-    # 91 Points versus 75 points
-
     print("Home: " + str(client.home))
 
     nonHomeNodes = list(client.G.nodes)
     nonHomeNodes.remove(client.home)
 
     heuristics = []
+
     students = list(range(1, client.students + 1))
+
     for n in nonHomeNodes:
         val = client.scout(n, students)
         yes = 0
@@ -30,12 +30,13 @@ def solve(client):
     while len(client.bot_locations) < client.bots and index < len(heuristics):
         node = heuristics[index][0]
         path = nx.algorithms.shortest_path(client.G, source=node, target=client.home)
-        print(path)
+        print("Path Home: " + str(path))
         for n in range(0, len(path) - 1):
             result = client.remote(path[n], path[n + 1])
             if result == 0:
                 break
         index += 1
 
+    print("Students on this run: " + str(students))
     print(client.bot_locations)
     client.end()

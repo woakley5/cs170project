@@ -1,5 +1,6 @@
 from subprocess import check_output
 import statistics as stats
+import re
 
 runs = input("Enter number of runs to try: ")
 try:
@@ -7,7 +8,7 @@ try:
     scores = []
     for i in range(1, r + 1):
         output = check_output(["python3","client.py","--solver","solver"])
-        score = float(output[-18:-1])
+        score = float(re.sub(r'[^\d.]+', "", str.split(str(output), "Score: ")[1]))
         print("Attempt " + str(i) + ": " + str(score))
         scores.append(score)
 
